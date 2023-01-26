@@ -4,6 +4,8 @@ import random, string, json
 from short_link.models import Urls
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.decorators.csrf import csrf_protect
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 
 LENGTH = 6
 
@@ -22,13 +24,23 @@ def redirect_original(request, short_url_id):
 
 def short_link(request):
     url_from_request = request.POST.get("url", "Undefined")
-    if url_from_request:
+    check_valid_url = valid_url(url_from_request)
+    if url_from_request and check_valid_url:
         short_id = get_short_code(LENGTH)
         url = Urls(long_url=url_from_request, short_url_id=short_id)
         url.save()
         resp_url = {'url': "http://127.0.0.1:8000" + "/" + short_id}
         return HttpResponse(json.dumps(resp_url),  content_type="application/json")
     return HttpResponse(json.dumps({"error": "error occurs"}), content_type="application/json")
+
+
+def valid_url(to_validate:str):
+    validator = URLValidator()
+    try:
+        validator(to_validate)
+        return True
+    except ValidationError as e:
+        return False
 
 
 def get_short_code(length):
