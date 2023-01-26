@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>{% block title %}Welcome to mysite{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<script type="text/javascript">
+ $(function() {
+ $('#submitButton').click(function() {
+ $.ajax({
+ type: "POST",
+ url: "/short_link/",
+ data: {
+ 'url' : $('#url').val(),
+ 'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val()
+ },
+ success: returnSuccess,
+ dataType: 'json'
+ });
+ });
+});
+
+function returnSuccess(data, textStatus, jqXHR) {
+ if(data.url) {
+ $('#url-result').text(data.url);
+ $('#url').val("");
+ } else {
+ $('#url-result').text("Ops... I can't find your url.");
+ }
+
+}
+
+</script>
+<body>
+<div id="wrap">
+    <header>
+        <a href="/"><img class="" style="width: 450px; margin-left: 15px;" src='{% static "images/short.png" %}' alt="shorten" ></a>
+    </header>
+
+    <div id="content">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>
