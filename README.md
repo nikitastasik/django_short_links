@@ -3,7 +3,7 @@
 Проект состоит из двух частей: <br/>
 
 <ul>
-    <li>API на Django</li>
+    <li>Бэк на Django</li>
     <li>Фронт на jQuery</li>
 </ul>
 
